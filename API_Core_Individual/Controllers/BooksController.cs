@@ -29,5 +29,29 @@ namespace API_Core_Individual.Controllers
         {
             return await _booksService.GetAllBooksAsync();
         }
+
+        [HttpGet("{id}")]
+        public async Task<Book> GetBookById(Guid id)
+        {
+            return null;
+        }
+
+        [HttpPut("{id}")]
+        public async Task<bool> UpdateBook(Guid id, Book book)
+        {
+            return true;
+        }
+
+        [HttpDelete("{id}")]
+        public async Task<bool> DeleteBook(Guid id)
+        {
+            return true;
+        }
+
+        [HttpPost]
+        public async Task<Guid> CreateBook(Book book)
+        {
+            return Guid.NewGuid();
+        }
     }
 }
