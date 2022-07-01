@@ -1,7 +1,10 @@
+using API_Core_BL;
+using API_Core_DAL;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -26,6 +29,11 @@ namespace API_Core_Individual
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddScoped<IBooksService, BooksService>();
+            services.AddScoped<IBooksRepository, BooksRepository>();
+
+            services.AddDbContext<EFCoreContext>(options =>
+                options.UseSqlServer(Configuration["ConnectionStrings:Default"]));
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
