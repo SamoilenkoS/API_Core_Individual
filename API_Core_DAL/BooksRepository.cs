@@ -18,13 +18,22 @@ namespace API_Core_DAL
 
         public Task<Guid> AddBookAsync(Book book)
         {
-            throw new NotImplementedException();
+            _dbContext.Books.Add(book);
+            _dbContext.SaveChanges();
+            var id = book.Id;
+            return null;
         }
 
-        public Task<bool> DeleteBookAsync(Guid id)
+        public async Task<bool> DeleteBookAsync(Guid id)
         {
-            throw new NotImplementedException();
+            bool result;
+            var book = _dbContext.Books.Where(x => x.Id == id).First();
+            _dbContext.Books.Remove(book);
+            result = _dbContext.SaveChanges() != 0;
+
+            return result;
         }
+
 
         public async Task<IEnumerable<Book>> GetAllBooksAsync()
         {
@@ -33,12 +42,20 @@ namespace API_Core_DAL
 
         public Task<Book> GetBookByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return null/*_dbContext.Books.Where(x => x.Id == id).FirstOrDefault()*/;
         }
 
         public Task<bool> UpdateBookAsync(Book book)
         {
-            throw new NotImplementedException();
+            bool result;
+
+            _dbContext.Books.Attach(book);
+
+            _dbContext.Entry(book).State = EntityState.Modified;
+
+            result = _dbContext.SaveChanges() != 0;
+
+            return null /*result*/;
         }
     }
 }

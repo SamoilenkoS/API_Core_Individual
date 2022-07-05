@@ -33,19 +33,19 @@ namespace API_Core_Individual.Controllers
         [HttpGet("{id}")]
         public async Task<Book> GetBookById(Guid id)
         {
-            return null;
+            return null /*_booksService.GetBookByIdAsync(id)*/;
         }
 
         [HttpPut("{id}")]
         public async Task<bool> UpdateBook(Guid id, Book book)
         {
-            return true;
+            return false /*_booksService.UpdateBookAsync(book)*/;
         }
 
         [HttpDelete("{id}")]
         public async Task<bool> DeleteBook(Guid id)
         {
-            return true;
+            return false /*_booksService.DeleteBookAsync(id)*/;
         }
 
         [HttpPost]
