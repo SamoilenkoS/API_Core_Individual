@@ -1,8 +1,6 @@
 ﻿using API_Core_DAL;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace API_Core_BL
@@ -16,14 +14,14 @@ namespace API_Core_BL
             _booksRepository = booksRepository;
         }
 
-        public Task<Guid> AddBookAsync(Book book)
+        public async Task<Guid> AddBookAsync(Book book)
         {
-            return _booksRepository.AddBookAsync(book);
+            return await _booksRepository.AddBookAsync(book);
         }
 
-        public Task<bool> DeleteBookAsync(Guid id)
+        public async Task<bool> DeleteBookAsync(Guid id)
         {
-            return _booksRepository.DeleteBookAsync(id);
+            return await _booksRepository.DeleteBookAsync(id);
         }
 
         public async Task<IEnumerable<Book>> GetAllBooksAsync()
@@ -31,14 +29,14 @@ namespace API_Core_BL
             return await _booksRepository.GetAllBooksAsync();
         }
 
-        public Task<Book> GetBookByIdAsync(Guid id)
+        public async Task<Book> GetBookByIdAsync(Guid id)
         {
-            return _booksRepository.GetBookByIdAsync(id);
+            return await _booksRepository.GetBookByIdAsync(id);
         }
 
-        public Task<bool> UpdateBookAsync(Book book)
+        public async Task<bool> UpdateBookAsync(Book book)
         {
-            return _booksRepository.UpdateBookAsync(book);
+            return await _booksRepository.UpdateBookAsync(book);
         }
     }
 }
