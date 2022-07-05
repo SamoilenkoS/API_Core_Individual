@@ -18,12 +18,12 @@ namespace API_Core_BL
 
         public Task<Guid> AddBookAsync(Book book)
         {
-            throw new NotImplementedException();
+            return _booksRepository.AddBookAsync(book);
         }
 
         public Task<bool> DeleteBookAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return _booksRepository.DeleteBookAsync(id);
         }
 
         public async Task<IEnumerable<Book>> GetAllBooksAsync()
@@ -33,12 +33,12 @@ namespace API_Core_BL
 
         public Task<Book> GetBookByIdAsync(Guid id)
         {
-            throw new NotImplementedException();
+            return _booksRepository.GetBookByIdAsync(id);
         }
 
         public Task<bool> UpdateBookAsync(Book book)
         {
-            throw new NotImplementedException();
+            return _booksRepository.UpdateBookAsync(book);
         }
     }
 }
