@@ -4,7 +4,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 
 namespace API_Core_Individual.Controllers
@@ -33,25 +32,27 @@ namespace API_Core_Individual.Controllers
         [HttpGet("{id}")]
         public async Task<Book> GetBookById(Guid id)
         {
-            return null /*_booksService.GetBookByIdAsync(id)*/;
+            return await _booksService.GetBookByIdAsync(id);
         }
 
         [HttpPut("{id}")]
         public async Task<bool> UpdateBook(Guid id, Book book)
         {
-            return false /*_booksService.UpdateBookAsync(book)*/;
+            book.Id = id;
+
+            return await _booksService.UpdateBookAsync(book);
         }
 
         [HttpDelete("{id}")]
         public async Task<bool> DeleteBook(Guid id)
         {
-            return false /*_booksService.DeleteBookAsync(id)*/;
+            return await _booksService.DeleteBookAsync(id);
         }
 
         [HttpPost]
         public async Task<Guid> CreateBook(Book book)
         {
-            return Guid.NewGuid();
+            return await _booksService.AddBookAsync(book);
         }
     }
 }

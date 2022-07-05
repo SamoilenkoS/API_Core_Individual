@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace API_Core_DAL
@@ -16,46 +15,39 @@ namespace API_Core_DAL
             _dbContext = dbContext;
         }
 
-        public Task<Guid> AddBookAsync(Book book)
+        public async Task<Guid> AddBookAsync(Book book)
         {
             _dbContext.Books.Add(book);
-            _dbContext.SaveChanges();
-            var id = book.Id;
-            return null;
+            await _dbContext.SaveChangesAsync();
+            return book.Id;
         }
 
         public async Task<bool> DeleteBookAsync(Guid id)
         {
-            bool result;
             var book = _dbContext.Books.Where(x => x.Id == id).First();
             _dbContext.Books.Remove(book);
-            result = _dbContext.SaveChanges() != 0;
-
-            return result;
+            return await _dbContext.SaveChangesAsync() != 0;
         }
-
 
         public async Task<IEnumerable<Book>> GetAllBooksAsync()
         {
             return await _dbContext.Books.ToListAsync();
         }
 
-        public Task<Book> GetBookByIdAsync(Guid id)
+        public async Task<Book> GetBookByIdAsync(Guid id)
         {
-            return null/*_dbContext.Books.Where(x => x.Id == id).FirstOrDefault()*/;
+            return await _dbContext.Books
+                .Where(x => x.Id == id)
+                .FirstOrDefaultAsync();
         }
 
-        public Task<bool> UpdateBookAsync(Book book)
+        public async Task<bool> UpdateBookAsync(Book book)
         {
-            bool result;
-
             _dbContext.Books.Attach(book);
 
             _dbContext.Entry(book).State = EntityState.Modified;
 
-            result = _dbContext.SaveChanges() != 0;
-
-            return null /*result*/;
+            return await _dbContext.SaveChangesAsync() != 0;
         }
     }
 }
