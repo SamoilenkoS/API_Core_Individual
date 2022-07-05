@@ -1,14 +1,11 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
 
-namespace API_Core_DAL
+namespace API_Core_DAL.Entities
 {
-    public class Book
+    public class Book : BaseEntity
     {
-        [Key]
-        public Guid Id { get; set; }
         public string Title { get; set; }
         public string Author { get; set; }
-        public int PagesCount { get; set; }
     }
 }

@@ -1,5 +1,7 @@
 ﻿using API_Core_BL;
+using API_Core_BL.Services.BooksService;
 using API_Core_DAL;
+using API_Core_DAL.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;

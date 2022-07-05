@@ -1,10 +1,12 @@
-﻿using System;
+﻿using API_Core_DAL;
+using API_Core_DAL.Entities;
+using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace API_Core_DAL
+namespace API_Core_BL.Services.BooksService
 {
-    public interface IBooksRepository
+    public interface IBooksService
     {
         Task<Book> GetBookByIdAsync(Guid id);
         Task<IEnumerable<Book>> GetAllBooksAsync();

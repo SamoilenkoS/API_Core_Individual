@@ -1,4 +1,5 @@
 using API_Core_BL;
+using API_Core_BL.Services.BooksService;
 using API_Core_DAL;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -23,7 +24,7 @@ namespace API_Core_Individual
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<IBooksService, BooksService>();
-            services.AddScoped<IBooksRepository, BooksRepository>();
+            services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
 
             services.AddDbContext<EFCoreContext>(options =>
                 options.UseSqlServer(Configuration["ConnectionStrings:Default"]));

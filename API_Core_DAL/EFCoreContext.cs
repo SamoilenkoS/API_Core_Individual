@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using API_Core_DAL.Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace API_Core_DAL
 {
