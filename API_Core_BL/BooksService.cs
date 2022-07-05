@@ -7,7 +7,7 @@ namespace API_Core_BL
 {
     public class BooksService : IBooksService
     {
-        private IBooksRepository _booksRepository;
+        private readonly IBooksRepository _booksRepository;
 
         public BooksService(IBooksRepository booksRepository)
         {

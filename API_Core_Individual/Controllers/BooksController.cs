@@ -26,6 +26,8 @@ namespace API_Core_Individual.Controllers
         [HttpGet]
         public async Task<IEnumerable<Book>> GetAllBooksAsync()
         {
+            _logger.LogInformation("Called get all books");
+
             return await _booksService.GetAllBooksAsync();
         }
 

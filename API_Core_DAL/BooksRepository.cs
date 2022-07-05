@@ -8,7 +8,7 @@ namespace API_Core_DAL
 {
     public class BooksRepository : IBooksRepository
     {
-        private EFCoreContext _dbContext;
+        private readonly EFCoreContext _dbContext;
 
         public BooksRepository(EFCoreContext dbContext)
         {
@@ -18,14 +18,19 @@ namespace API_Core_DAL
         public async Task<Guid> AddBookAsync(Book book)
         {
             _dbContext.Books.Add(book);
+
             await _dbContext.SaveChangesAsync();
+
             return book.Id;
         }
 
         public async Task<bool> DeleteBookAsync(Guid id)
         {
-            var book = _dbContext.Books.Where(x => x.Id == id).First();
-            _dbContext.Books.Remove(book);
+            var book = new Book { Id = id };
+            _dbContext.Books.Attach(book);
+
+            _dbContext.Entry(book).State = EntityState.Deleted;
+
             return await _dbContext.SaveChangesAsync() != 0;
         }
 
