@@ -23,11 +23,11 @@ namespace API_Core_Individual
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddDbContext<DbEfContext>(options =>
+                options.UseSqlServer(Configuration["ConnectionStrings:Default"]));
             services.AddScoped<IBooksService, BooksService>();
             services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
 
-            services.AddDbContext<EFCoreContext>(options =>
-                options.UseSqlServer(Configuration["ConnectionStrings:Default"]));
 
             services.AddControllers();
             services.AddSwaggerGen(c =>

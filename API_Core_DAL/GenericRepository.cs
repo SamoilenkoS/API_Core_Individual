@@ -10,10 +10,10 @@ namespace API_Core_DAL
     public class GenericRepository<T> : IRepository<T>
         where T : BaseEntity, new()
     {
-        private readonly EFCoreContext _dbContext;
+        private readonly DbEfContext _dbContext;
         private readonly DbSet<T> _dbSet;
 
-        public GenericRepository(EFCoreContext dbContext)
+        public GenericRepository(DbEfContext dbContext)
         {
             _dbContext = dbContext;
             _dbSet = _dbContext.Set<T>();
