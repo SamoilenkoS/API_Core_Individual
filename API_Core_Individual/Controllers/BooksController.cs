@@ -1,4 +1,5 @@
 ﻿using API_Core_BL;
+using API_Core_BL.DTOs;
 using API_Core_BL.Services.BooksService;
 using API_Core_DAL;
 using API_Core_DAL.Entities;
@@ -57,6 +58,21 @@ namespace API_Core_Individual.Controllers
         public async Task<Guid> CreateBook(Book book)
         {
             return await _booksService.AddBookAsync(book);
+        }
+
+        [HttpGet("test/{id}")]
+        public async Task<IActionResult> GetSomething(Guid id)
+        {
+            BookDto bookInfo = null;
+            try
+            {
+                bookInfo = await _booksService.GetAllAboutBook(id);
+            }
+            catch (ArgumentException)
+            {
+            }
+
+            return bookInfo != null ? Ok(bookInfo) : BadRequest();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using API_Core_DAL;
+﻿using API_Core_BL.DTOs;
+using API_Core_DAL;
 using API_Core_DAL.Entities;
 using System;
 using System.Collections.Generic;
@@ -13,5 +14,6 @@ namespace API_Core_BL.Services.BooksService
         Task<Guid> AddBookAsync(Book book);
         Task<bool> DeleteBookAsync(Guid id);
         Task<bool> UpdateBookAsync(Book book);
+        Task<BookDto> GetAllAboutBook(Guid id);
     }
 }

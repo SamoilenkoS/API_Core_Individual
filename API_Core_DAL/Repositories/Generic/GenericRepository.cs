@@ -3,11 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Threading.Tasks;
 
 namespace API_Core_DAL
 {
-    public class GenericRepository<T> : IRepository<T>
+    public class GenericRepository<T> : IGenericRepository<T>
         where T : BaseEntity, new()
     {
         private readonly DbEfContext _dbContext;
@@ -42,6 +43,12 @@ namespace API_Core_DAL
         {
             return await _dbSet.ToListAsync();
         }
+
+        public IQueryable<T> GetByPredicate(Expression<Func<T, bool>> predicate)
+        {
+            return _dbSet.Where(predicate);
+        }
+
 
         public async Task<T> GetByIdAsync(Guid id)
         {

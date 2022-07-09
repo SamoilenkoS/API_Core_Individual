@@ -26,7 +26,8 @@ namespace API_Core_Individual
             services.AddDbContext<DbEfContext>(options =>
                 options.UseSqlServer(Configuration["ConnectionStrings:Default"]));
             services.AddScoped<IBooksService, BooksService>();
-            services.AddScoped(typeof(IRepository<>), typeof(GenericRepository<>));
+            services.AddScoped<IBookRevisionRepository, BookRevisionRepository>();
+            services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
 
             services.AddControllers();
