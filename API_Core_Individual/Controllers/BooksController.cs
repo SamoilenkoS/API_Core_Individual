@@ -1,6 +1,7 @@
 ﻿using API_Core_BL.DTOs;
 using API_Core_BL.Services.BooksService;
 using API_Core_DAL.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using System;
@@ -46,12 +47,14 @@ namespace API_Core_Individual.Controllers
             return await _booksService.UpdateBookAsync(book);
         }
 
+        [Authorize]
         [HttpDelete("{id}")]
         public async Task<bool> DeleteBook(Guid id)
         {
             return await _booksService.DeleteBookAsync(id);
         }
 
+        [Authorize]
         [HttpPost]
         public async Task<Guid> CreateBook(Book book)
         {
