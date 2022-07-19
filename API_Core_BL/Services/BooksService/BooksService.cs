@@ -1,7 +1,6 @@
 ﻿using API_Core_BL.DTOs;
 using API_Core_DAL;
 using API_Core_DAL.Entities;
-using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;

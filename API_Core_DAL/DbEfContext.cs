@@ -1,6 +1,5 @@
 ﻿using API_Core_DAL.Entities;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics.CodeAnalysis;
 
 namespace API_Core_DAL
 {
