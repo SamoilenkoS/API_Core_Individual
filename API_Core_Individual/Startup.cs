@@ -1,5 +1,6 @@
-using API_Core_BL;
 using API_Core_BL.Services.BooksService;
+using API_Core_BL.Services.ClientService;
+using API_Core_BL.Services.GenericService;
 using API_Core_DAL;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -26,6 +27,8 @@ namespace API_Core_Individual
             services.AddDbContext<DbEfContext>(options =>
                 options.UseSqlServer(Configuration["ConnectionStrings:Default"]));
             services.AddScoped<IBooksService, BooksService>();
+            services.AddScoped<IClientService, ClientService>();
+            services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
             services.AddScoped<IBookRevisionRepository, BookRevisionRepository>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 

@@ -1,10 +1,5 @@
-﻿using API_Core_BL.DTOs;
-using API_Core_DAL.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace API_Core_BL.DTOs
 {

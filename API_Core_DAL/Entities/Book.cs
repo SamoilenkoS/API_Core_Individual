@@ -1,7 +1,4 @@
-﻿using System;
-using System.ComponentModel.DataAnnotations;
-
-namespace API_Core_DAL.Entities
+﻿namespace API_Core_DAL.Entities
 {
     public class Book : BaseEntity
     {
