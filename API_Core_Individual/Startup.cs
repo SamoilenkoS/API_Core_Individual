@@ -13,6 +13,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using System.Collections.Generic;
 using System.Text;
 
 namespace API_Core_Individual
@@ -56,14 +57,41 @@ namespace API_Core_Individual
                         ValidateLifetime = true,
                         IssuerSigningKey = new SymmetricSecurityKey
                         (Encoding.ASCII.GetBytes(authOptions.Key)),
-                        ValidateIssuerSigningKey = true,
+                        ValidateIssuerSigningKey = true
                     };
                 });
 
             services.AddControllers();
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "API_Core_Individual", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo { Title = 
+                    "API_Core_Individual", Version = "v1" });
+                c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                {
+                    Name = "Authorization",
+                    In = ParameterLocation.Header,
+                    Type = SecuritySchemeType.ApiKey,
+                    Scheme = "Bearer"
+                });
+
+                c.AddSecurityRequirement(new OpenApiSecurityRequirement()
+                  {
+                    {
+                      new OpenApiSecurityScheme
+                      {
+                        Reference = new OpenApiReference
+                          {
+                            Type = ReferenceType.SecurityScheme,
+                            Id = "Bearer"
+                          },
+                          Scheme = "oauth2",
+                          Name = "Bearer",
+                          In = ParameterLocation.Header,
+                        },
+
+                        new List<string>()
+                      }
+                    });
             });
         }
 

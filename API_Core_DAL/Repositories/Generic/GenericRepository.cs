@@ -22,6 +22,7 @@ namespace API_Core_DAL
 
         public async Task<Guid> AddAsync(T baseEntity)
         {
+            baseEntity.Id = Guid.NewGuid();
             _dbSet.Add(baseEntity);
 
             await _dbContext.SaveChangesAsync();
