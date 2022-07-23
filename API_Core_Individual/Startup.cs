@@ -57,7 +57,7 @@ namespace API_Core_Individual
                         ValidateLifetime = true,
                         IssuerSigningKey = new SymmetricSecurityKey
                         (Encoding.ASCII.GetBytes(authOptions.Key)),
-                        ValidateIssuerSigningKey = true,
+                        ValidateIssuerSigningKey = true
                     };
                 });
 
