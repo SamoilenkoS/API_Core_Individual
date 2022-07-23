@@ -38,6 +38,7 @@ namespace API_Core_Individual
             services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
             services.AddScoped<IBookRevisionRepository, BookRevisionRepository>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddSignalR();
 
             services.Configure<AuthOptions>(options =>
                Configuration.GetSection(nameof(AuthOptions)).Bind(options));
@@ -115,6 +116,7 @@ namespace API_Core_Individual
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+                endpoints.MapHub<ChatHub>("/chat");
             });
         }
     }
