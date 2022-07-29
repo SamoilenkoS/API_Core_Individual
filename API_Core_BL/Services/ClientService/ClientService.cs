@@ -1,4 +1,5 @@
 ﻿using API_Core_BL.DTOs;
+using API_Core_BL.Services.PasswordSecurityService;
 using API_Core_BL.Services.TokenService;
 using API_Core_DAL;
 using API_Core_DAL.Entities;
@@ -13,18 +14,23 @@ namespace API_Core_BL.Services.ClientService
     {
         private readonly IGenericRepository<Client> _clientRepository;
         private readonly ITokenService _tokenService;
+        private readonly IPasswordService _passwordService;
 
         public ClientService(
             IGenericRepository<Client> clientRepository,
-            ITokenService tokenService
+            ITokenService tokenService, IPasswordService passwordService
             )
         {
             _clientRepository = clientRepository;
             _tokenService = tokenService;
+            _passwordService = passwordService;
         }
 
         public async Task<Guid> AddClientAsync(Client client)
         {
+            client.Salt = _passwordService.GenerateSalted();
+            client.Password = _passwordService.PasswordHashing(client.Password,
+                client.Salt);
             return await _clientRepository.AddAsync(client);
         }
 
@@ -50,13 +56,17 @@ namespace API_Core_BL.Services.ClientService
 
         public async Task<string> LoginAsync(LoginDto loginDto)
         {
-            var client = await _clientRepository.GetByPredicate(x => 
-            x.Email == loginDto.Email && x.Password == loginDto.Password)
+            var client = await _clientRepository.GetByPredicate(x =>
+            x.Email == loginDto.Email)
                 .FirstOrDefaultAsync();
-
-            if(client != null)
+            if (client != null)
             {
-                return _tokenService.GenerateToken(client.Email, "Reader");
+                bool samePassword = _passwordService.ValidatePassword(loginDto.Password,
+                    client.Password, client.Salt);
+                if (samePassword)
+                {
+                    return _tokenService.GenerateToken(client.Email, "Reader");
+                }
             }
 
             return string.Empty;
