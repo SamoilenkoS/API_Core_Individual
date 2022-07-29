@@ -2,6 +2,7 @@ using API_Core_BL.Options;
 using API_Core_BL.Services.BooksService;
 using API_Core_BL.Services.ClientService;
 using API_Core_BL.Services.GenericService;
+using API_Core_BL.Services.PasswordSecurityService;
 using API_Core_BL.Services.TokenService;
 using API_Core_DAL;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -38,6 +39,7 @@ namespace API_Core_Individual
             services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
             services.AddScoped<IBookRevisionRepository, BookRevisionRepository>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            services.AddScoped<IPasswordService, PasswordService>();
             services.AddSignalR();
 
             services.Configure<AuthOptions>(options =>
