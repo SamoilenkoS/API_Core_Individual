@@ -13,6 +13,7 @@ namespace API_Core_DAL
         Task<T> GetByIdAsync(Guid id);
         Task<IEnumerable<T>> GetAllAsync();
         IQueryable<T> GetByPredicate(Expression<Func<T, bool>> predicate);
+        Task<IEnumerable<T>> GetByPredicateEnumerable(Expression<Func<T, bool>> predicate);
         Task<Guid> AddAsync(T baseEntity);
         Task<bool> DeleteAsync(Guid id);
         Task<bool> UpdateAsync(T baseEntity);

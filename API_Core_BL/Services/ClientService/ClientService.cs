@@ -6,6 +6,7 @@ using API_Core_DAL.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 
 namespace API_Core_BL.Services.ClientService
@@ -56,9 +57,9 @@ namespace API_Core_BL.Services.ClientService
 
         public async Task<string> LoginAsync(LoginDto loginDto)
         {
-            var client = await _clientRepository.GetByPredicate(x =>
-            x.Email == loginDto.Email)
-                .FirstOrDefaultAsync();
+            var client = (await _clientRepository.GetByPredicateEnumerable(x =>
+            x.Email == loginDto.Email)).FirstOrDefault();
+
             if (client != null)
             {
                 bool samePassword = _passwordService.ValidatePassword(loginDto.Password,

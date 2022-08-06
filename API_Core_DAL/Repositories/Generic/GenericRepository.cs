@@ -66,5 +66,11 @@ namespace API_Core_DAL
 
             return await _dbContext.SaveChangesAsync() != 0;
         }
+
+        public async Task<IEnumerable<T>> GetByPredicateEnumerable(
+            Expression<Func<T, bool>> predicate)
+        {
+            return await _dbSet.Where(predicate).ToListAsync();
+        }
     }
 }

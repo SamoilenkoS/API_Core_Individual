@@ -153,27 +153,25 @@ namespace API_UnitTests
             var hashedPassword = _fixture.Create<string>();
             var clientGuid = Guid.NewGuid();
 
-            _passwordServiceMock
-                .Setup(x => x.GenerateSalted())
-                .Returns(salt)
-                .Verifiable();
-            _passwordServiceMock
-                .Setup(x => x.PasswordHashing(clientLogin.Password, salt))
-                .Returns(hashedPassword)
-                .Verifiable();
-
-            LoginDto loginDto = new LoginDto()
+            var loginDto = new LoginDto()
             {
                 Email = clientLogin.Email,
                 Password = clientLogin.Password
             };
 
-            //_genericClientRepositoryMock
-            //    .Setup(repository =>
-            //        repository.GetByPredicate(x =>
-            //            x.Email == loginDto.Email)
-            //    .ReturnsAsync(token)
-            //    .Verifiable();
+            _genericClientRepositoryMock
+                .Setup(repository =>
+                    repository.GetByPredicateEnumerable(x =>
+                        x.Email == loginDto.Email))
+                .ReturnsAsync(new List<Client> { clientLogin })
+                .Verifiable();
+            _passwordServiceMock.Setup(ps => ps.ValidatePassword(
+                loginDto.Password, clientLogin.Password, clientLogin.Salt))
+                .Returns(true)
+                .Verifiable();
+            _tokenServiceMock
+                .Setup(ts => ts.GenerateToken(clientLogin.Email, "Reader"))
+                .Returns(token);
             var clientService = new ClientService(
                  _genericClientRepositoryMock.Object,
                  _tokenServiceMock.Object,
@@ -186,27 +184,26 @@ namespace API_UnitTests
             _genericClientRepositoryMock.Verify();
         }
 
-        //[Test]
-        //public async Task GetClientByIdAsync_WhenCalled_ShouldGetClientByIdFromRepository()
-        //{
-        //    var getClient = _fixture.Create<Client>();
+        [Test]
+        public async Task GetClientByIdAsync_WhenCalled_ShouldGetClientByIdFromRepository()
+        {
+            var getClient = _fixture.Create<Client>();
 
-        //    _genericClientRepositoryMock
-        //        .Setup(repository =>
-        //            repository.GetByIdAsync(getClient.Id)
-        //        .ReturnsAsync(getClient)
-        //        .Verifiable();
+            _genericClientRepositoryMock
+                .Setup(repository => repository.GetByIdAsync(getClient.Id))
+                .ReturnsAsync(getClient)
+                .Verifiable();
 
-        //    var clientService = new ClientService(
-        //         _genericClientRepositoryMock.Object,
-        //         _tokenServiceMock.Object,
-        //         _passwordServiceMock.Object);
+            var clientService = new ClientService(
+                 _genericClientRepositoryMock.Object,
+                 _tokenServiceMock.Object,
+                 _passwordServiceMock.Object);
 
-        //    var actualClient = await clientService.GetClientByIdAsync(getClient.Id);
+            var actualClient = await clientService.GetClientByIdAsync(getClient.Id);
 
-        //    actualClient.Should().Be(getClient);
-        //    _genericClientRepositoryMock.Verify();
-        //}
+            actualClient.Should().Be(getClient);
+            _genericClientRepositoryMock.Verify();
+        }
 
     }
 }

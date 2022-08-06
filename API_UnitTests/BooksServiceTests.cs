@@ -117,27 +117,26 @@ namespace API_UnitTests
             _genericBooksRepositoryMock.Verify();
         }
 
-        //[Test]
-        //public async Task GetBookByIdAsync_WhenCalled_ShouldGetBookByIdRepository()
-        //{
-        //    var getBook = _fixture.Create<Book>();
+        [Test]
+        public async Task GetBookByIdAsync_WhenCalled_ShouldGetBookByIdRepository()
+        {
+            var getBook = _fixture.Create<Book>();
 
-        //    _genericBooksRepositoryMock
-        //        .Setup(repository =>
-        //            repository.GetByIdAsync(getBook.Id)
-        //        .ReturnsAsync(getBook)
-        //        .Verifiable();
+            _genericBooksRepositoryMock
+                .Setup(repository =>
+                    repository.GetByIdAsync(getBook.Id))
+                .ReturnsAsync(getBook)
+                .Verifiable();
 
+            var booksService = new BooksService(
+                _genericBooksRepositoryMock.Object,
+                _booksRevisionRepositoryMock.Object);
 
-        //    var booksService = new BooksService(
-        //        _genericBooksRepositoryMock.Object,
-        //        _booksRevisionRepositoryMock.Object);
+            var actualBook = await booksService.GetBookByIdAsync(getBook.Id);
 
-        //    var actualBook = await booksService.GetByIdAsync(getBookGuid);
-
-        //    actualBook.Should().Be(getBook);
-        //    _genericBooksRepositoryMock.Verify();
-        //}
+            actualBook.Should().Be(getBook);
+            _genericBooksRepositoryMock.Verify();
+        }
 
         [Test]
         public async Task GetAllAboutBook_WhenCalled_ShouldReturnBookAndItsRevisions()
