@@ -1,7 +1,11 @@
 using API_Core_BL.Options;
 using API_Core_BL.Services.BooksService;
+using API_Core_BL.Services.CitySevice;
 using API_Core_BL.Services.ClientService;
 using API_Core_BL.Services.GenericService;
+using API_Core_BL.Services.LibraryBookService;
+using API_Core_BL.Services.LibraryRentService;
+using API_Core_BL.Services.LibraryService;
 using API_Core_BL.Services.PasswordSecurityService;
 using API_Core_BL.Services.TokenService;
 using API_Core_DAL;
@@ -36,6 +40,10 @@ namespace API_Core_Individual
             services.AddScoped<IBooksService, BooksService>();
             services.AddScoped<IClientService, ClientService>();
             services.AddScoped<ITokenService, TokenService>();
+            services.AddScoped<ICityService, CityService>();
+            services.AddScoped<ILibraryService, LibraryService>();
+            services.AddScoped<ILibraryBookService, LibraryBookService>();
+            services.AddScoped<ILibraryRentService, LibraryRentService>();
             services.AddScoped(typeof(IGenericService<>), typeof(GenericService<>));
             services.AddScoped<IBookRevisionRepository, BookRevisionRepository>();
             services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));

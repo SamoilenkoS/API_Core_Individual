@@ -49,6 +49,97 @@ namespace API_UnitTests
         }
 
         [Test]
+        public async Task AddBookAsync_WhenCalled_ShouldAddBookToRepository()
+        {
+            var addBook = _fixture.Create<Book>();
+            var addBookGuid = Guid.NewGuid();
+
+            _genericBooksRepositoryMock
+                .Setup(repository =>
+                    repository.AddAsync(
+                        It.Is<Book>(book =>
+                            book.Author == addBook.Author &&
+                            book.Title == addBook.Title)))
+                .ReturnsAsync(addBookGuid)
+                .Verifiable();
+            var booksService = new BooksService(
+                _genericBooksRepositoryMock.Object,
+                _booksRevisionRepositoryMock.Object);
+
+            var actualBookGuid = await booksService.AddBookAsync(addBook);
+
+            actualBookGuid.Should().Be(addBookGuid);
+            _genericBooksRepositoryMock.Verify();
+        }
+
+        [Test]
+        public async Task DeleteBookAsync_WhenCalled_ShouldDeleteBookFromRepository()
+        {
+            var deleteBook = _fixture.Create<Book>();
+
+            _genericBooksRepositoryMock
+                .Setup(repository =>
+                    repository.DeleteAsync(deleteBook.Id))
+                .ReturnsAsync(true)
+                .Verifiable();
+            var booksService = new BooksService(
+                _genericBooksRepositoryMock.Object,
+                _booksRevisionRepositoryMock.Object);
+
+            bool deleteBookBool = false;
+            deleteBookBool = await booksService.DeleteBookAsync(deleteBook.Id);
+
+            deleteBookBool.Should().Be(true);
+            _genericBooksRepositoryMock.Verify();
+        }
+
+        [Test]
+        public async Task UpdateBookAsync_WhenCalled_ShouldUpdateBookInRepository()
+        {
+            var updateBook = _fixture.Create<Book>();
+
+            _genericBooksRepositoryMock
+                .Setup(repository =>
+                    repository.UpdateAsync(
+                        It.Is<Book>(book =>
+                            book.Author == updateBook.Author &&
+                            book.Title == updateBook.Title)))
+                .ReturnsAsync(true)
+                .Verifiable();
+            var booksService = new BooksService(
+                _genericBooksRepositoryMock.Object,
+                _booksRevisionRepositoryMock.Object);
+
+            bool updateBookBool = false;
+            updateBookBool = await booksService.UpdateBookAsync(updateBook);
+
+            updateBookBool.Should().Be(true);
+            _genericBooksRepositoryMock.Verify();
+        }
+
+        //[Test]
+        //public async Task GetBookByIdAsync_WhenCalled_ShouldGetBookByIdRepository()
+        //{
+        //    var getBook = _fixture.Create<Book>();
+
+        //    _genericBooksRepositoryMock
+        //        .Setup(repository =>
+        //            repository.GetByIdAsync(getBook.Id)
+        //        .ReturnsAsync(getBook)
+        //        .Verifiable();
+
+
+        //    var booksService = new BooksService(
+        //        _genericBooksRepositoryMock.Object,
+        //        _booksRevisionRepositoryMock.Object);
+
+        //    var actualBook = await booksService.GetByIdAsync(getBookGuid);
+
+        //    actualBook.Should().Be(getBook);
+        //    _genericBooksRepositoryMock.Verify();
+        //}
+
+        [Test]
         public async Task GetAllAboutBook_WhenCalled_ShouldReturnBookAndItsRevisions()
         {
             var bookId = Guid.NewGuid();
