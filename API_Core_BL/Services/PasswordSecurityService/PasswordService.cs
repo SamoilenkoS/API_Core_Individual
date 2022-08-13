@@ -6,16 +6,6 @@ namespace API_Core_BL.Services.PasswordSecurityService
 {
     public class PasswordService : IPasswordService
     {
-        public string GenerateSalted()
-        {
-            byte[] salt = new byte[128 / 8];
-            using (var rngCsp = new RNGCryptoServiceProvider())
-            {
-                rngCsp.GetNonZeroBytes(salt);
-            }
-
-            return Convert.ToBase64String(salt);
-        }
 
         public string PasswordHashing(string password, string salt)
         {

@@ -1,4 +1,5 @@
-﻿using API_Core_DAL.Entities;
+﻿using API_Core_BL.DTOs;
+using API_Core_DAL.Entities;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -9,7 +10,7 @@ namespace API_Core_BL.Services.LibraryService
     {
         Task<Library> GetLibraryByIdAsync(Guid id);
         Task<IEnumerable<Library>> GetAllLibrariesAsync();
-        Task<Guid> AddLibraryAsync(Library library);
+        Task<Guid> AddLibraryAsync(LibraryDto libraryDto);
         Task<bool> DeleteLibraryAsync(Guid id);
         Task<bool> UpdateLibraryAsync(Library library);
     }

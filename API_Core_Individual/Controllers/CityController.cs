@@ -46,14 +46,12 @@ namespace API_Core_Individual.Controllers
             return await _cityService.UpdateCityAsync(city);
         }
 
-        [Authorize]
         [HttpDelete("{id}")]
         public async Task<bool> DeleteCity(Guid id)
         {
             return await _cityService.DeleteCityAsync(id);
         }
 
-        [Authorize]
         [HttpPost]
         public async Task<Guid> CreateCity(City city)
         {
