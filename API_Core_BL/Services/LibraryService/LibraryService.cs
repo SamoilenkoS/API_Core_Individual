@@ -20,14 +20,15 @@ namespace API_Core_BL.Services.LibraryService
 
         public async Task<Guid> AddLibraryAsync(LibraryDto libraryDto)
         {
-            Library addLibrary = new Library();
-            addLibrary.DelayPrice = libraryDto.DelayPrice;
-            addLibrary.FullAddress = libraryDto.FullAddress;
-            addLibrary.Latitude = libraryDto.Latitude;
-            addLibrary.Longitude = libraryDto.Longitude;
+            var addLibrary = new Library
+            {
+                DelayPrice = libraryDto.DelayPrice,
+                FullAddress = libraryDto.FullAddress,
+                Latitude = libraryDto.Latitude,
+                Longitude = libraryDto.Longitude,
+                CityId = libraryDto.CityId
+            };
 
-            var city = await _cityRepository.GetByIdAsync(libraryDto.CityId);
-            addLibrary.City = city;
             return await _libraryRepository.AddAsync(addLibrary);
         }
 

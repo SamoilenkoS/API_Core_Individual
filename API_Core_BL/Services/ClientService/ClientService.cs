@@ -33,7 +33,6 @@ namespace API_Core_BL.Services.ClientService
 
         public async Task<Guid> AddClientAsync(Client client)
         {
-            
             client.Password = _passwordService.PasswordHashing(client.Password,
                 _salt);
             return await _clientRepository.AddAsync(client);

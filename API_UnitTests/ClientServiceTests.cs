@@ -11,6 +11,7 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Threading.Tasks;
 
 namespace API_UnitTests
@@ -21,32 +22,42 @@ namespace API_UnitTests
         private Mock<IGenericRepository<Client>> _genericClientRepositoryMock;
         private Mock<ITokenService> _tokenServiceMock;
         private Mock<IPasswordService> _passwordServiceMock;
-        private Mock<IConfiguration> _configuration;
+        private IConfiguration _configuration;
         private readonly string _salt;
 
         public ClientServiceTests()
         {
             _fixture = new Fixture();
+
+            _salt = "salt";
+            var inMemorySettings = new Dictionary<string, string> {
+                {"SecuritySettings:Salt", _salt}};
+
+            _configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(inMemorySettings)
+                .Build();
+        }
+
+        [SetUp]
+        public void Setup()
+        {
             _genericClientRepositoryMock = new Mock<IGenericRepository<Client>>();
             _tokenServiceMock = new Mock<ITokenService>();
             _passwordServiceMock = new Mock<IPasswordService>();
-            _configuration = new Mock<IConfiguration>();
-            _salt = "CJZwnMlpqN3Q9elgDkqdlQ==";
         }
 
         [Test]
         public async Task AddClientAsync_WhenValidUserPassed_ShouldRegisterUser()
         {
             var _client = _fixture.Create<Client>();
-            _client.Password = "Pass123";
-            var hashedPassword = "G7+Zl0JjprruZEVsOyWBDd+e9Wo1W3Hl";
+            _client.Password = "password";
+            var hashedPassword = "hashed";
             var clientGuid = Guid.NewGuid();
             _passwordServiceMock
                 .Setup(x => x.PasswordHashing(_client.Password, _salt))
                 .Returns(hashedPassword)
                 .Verifiable();
 
-            _client.Password = hashedPassword;
             _genericClientRepositoryMock
                 .Setup(repository =>
                     repository.AddAsync(
@@ -61,7 +72,7 @@ namespace API_UnitTests
            var clientService = new ClientService(
                 _genericClientRepositoryMock.Object,
                 _tokenServiceMock.Object,
-                _passwordServiceMock.Object, _configuration.Object);
+                _passwordServiceMock.Object, _configuration);
 
             var actualClientGuid = await clientService.AddClientAsync(_client);
 
@@ -83,7 +94,7 @@ namespace API_UnitTests
             var clientService = new ClientService(
                  _genericClientRepositoryMock.Object,
                  _tokenServiceMock.Object,
-                 _passwordServiceMock.Object, _configuration.Object);
+                 _passwordServiceMock.Object, _configuration);
 
             bool deleteClientBool = false;
             deleteClientBool = await clientService.DeleteClientAsync(client.Id);
@@ -110,7 +121,7 @@ namespace API_UnitTests
             var clientService = new ClientService(
                  _genericClientRepositoryMock.Object,
                  _tokenServiceMock.Object,
-                 _passwordServiceMock.Object, _configuration.Object);
+                 _passwordServiceMock.Object, _configuration);
 
             bool updateClientBool = false;
             updateClientBool = await clientService.UpdateClientAsync(updateClient);
@@ -135,7 +146,7 @@ namespace API_UnitTests
             var clientService = new ClientService(
                  _genericClientRepositoryMock.Object,
                  _tokenServiceMock.Object,
-                 _passwordServiceMock.Object, _configuration.Object);
+                 _passwordServiceMock.Object, _configuration);
 
             var actulClients = await clientService.GetAllClientsAsync();
 
@@ -148,14 +159,15 @@ namespace API_UnitTests
         {
             var clientLogin = _fixture.Create<Client>();
             var token = _fixture.Create<string>();
-            clientLogin.Password = "Pass123";
-            var hashedPassword = "G7+Zl0JjprruZEVsOyWBDd+e9Wo1W3Hl";
+            var password = "Pass123";
+            var hashedPassword = "hashed";
+            clientLogin.Password = hashedPassword;
             var clientGuid = Guid.NewGuid();
 
             var loginDto = new LoginDto()
             {
                 Email = clientLogin.Email,
-                Password = clientLogin.Password
+                Password = password
             };
 
             _genericClientRepositoryMock
@@ -174,13 +186,14 @@ namespace API_UnitTests
             var clientService = new ClientService(
                  _genericClientRepositoryMock.Object,
                  _tokenServiceMock.Object,
-                 _passwordServiceMock.Object, _configuration.Object);
+                 _passwordServiceMock.Object, _configuration);
 
             var actualClientToken = await clientService.LoginAsync(loginDto);
 
             actualClientToken.Should().Be(token);
             _passwordServiceMock.Verify();
             _genericClientRepositoryMock.Verify();
+            _tokenServiceMock.Verify();
         }
 
         [Test]
@@ -196,7 +209,7 @@ namespace API_UnitTests
             var clientService = new ClientService(
                  _genericClientRepositoryMock.Object,
                  _tokenServiceMock.Object,
-                 _passwordServiceMock.Object, _configuration.Object);
+                 _passwordServiceMock.Object, _configuration);
 
             var actualClient = await clientService.GetClientByIdAsync(getClient.Id);
 
