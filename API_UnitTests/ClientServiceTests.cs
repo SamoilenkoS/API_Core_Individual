@@ -6,12 +6,12 @@ using API_Core_DAL;
 using API_Core_DAL.Entities;
 using AutoFixture;
 using FluentAssertions;
+using Microsoft.Extensions.Configuration;
 using Moq;
 using NUnit.Framework;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Configuration;
 using System.Threading.Tasks;
 
 namespace API_UnitTests
@@ -22,10 +22,25 @@ namespace API_UnitTests
         private Mock<IGenericRepository<Client>> _genericClientRepositoryMock;
         private Mock<ITokenService> _tokenServiceMock;
         private Mock<IPasswordService> _passwordServiceMock;
+        private IConfiguration _configuration;
+        private readonly string _salt;
 
         public ClientServiceTests()
         {
             _fixture = new Fixture();
+
+            _salt = "salt";
+            var inMemorySettings = new Dictionary<string, string> {
+                {"SecuritySettings:Salt", _salt}};
+
+            _configuration = new ConfigurationBuilder()
+                .AddInMemoryCollection(inMemorySettings)
+                .Build();
+        }
+
+        [SetUp]
+        public void Setup()
+        {
             _genericClientRepositoryMock = new Mock<IGenericRepository<Client>>();
             _tokenServiceMock = new Mock<ITokenService>();
             _passwordServiceMock = new Mock<IPasswordService>();
@@ -35,33 +50,29 @@ namespace API_UnitTests
         public async Task AddClientAsync_WhenValidUserPassed_ShouldRegisterUser()
         {
             var _client = _fixture.Create<Client>();
-            var salt = _fixture.Create<string>();
-            var hashedPassword = _fixture.Create<string>();
+            _client.Password = "password";
+            var hashedPassword = "hashed";
             var clientGuid = Guid.NewGuid();
             _passwordServiceMock
-                .Setup(x => x.GenerateSalted())
-                .Returns(salt)
-                .Verifiable();
-            _passwordServiceMock
-                .Setup(x => x.PasswordHashing(_client.Password, salt))
+                .Setup(x => x.PasswordHashing(_client.Password, _salt))
                 .Returns(hashedPassword)
                 .Verifiable();
+
             _genericClientRepositoryMock
                 .Setup(repository =>
                     repository.AddAsync(
                         It.Is<Client>(client =>
-                            client.BirthDate == client.BirthDate &&
-                            client.Email == client.Email &&
-                            client.FirstName == client.FirstName &&
-                            client.LastName == client.LastName &&
-                            client.Password == hashedPassword &&
-                            client.Salt == salt)))
+                            client.BirthDate == _client.BirthDate &&
+                            client.Email == _client.Email &&
+                            client.FirstName == _client.FirstName &&
+                            client.LastName == _client.LastName &&
+                            client.Password == hashedPassword)))
                 .ReturnsAsync(clientGuid)
                 .Verifiable();
            var clientService = new ClientService(
                 _genericClientRepositoryMock.Object,
                 _tokenServiceMock.Object,
-                _passwordServiceMock.Object);
+                _passwordServiceMock.Object, _configuration);
 
             var actualClientGuid = await clientService.AddClientAsync(_client);
 
@@ -83,7 +94,7 @@ namespace API_UnitTests
             var clientService = new ClientService(
                  _genericClientRepositoryMock.Object,
                  _tokenServiceMock.Object,
-                 _passwordServiceMock.Object);
+                 _passwordServiceMock.Object, _configuration);
 
             bool deleteClientBool = false;
             deleteClientBool = await clientService.DeleteClientAsync(client.Id);
@@ -104,14 +115,13 @@ namespace API_UnitTests
                             client.Email == updateClient.Email &&
                             client.FirstName == updateClient.FirstName &&
                             client.LastName == updateClient.LastName &&
-                            client.Password == updateClient.Password &&
-                            client.Salt == updateClient.Salt)))
+                            client.Password == updateClient.Password)))
                 .ReturnsAsync(true)
                 .Verifiable();
             var clientService = new ClientService(
                  _genericClientRepositoryMock.Object,
                  _tokenServiceMock.Object,
-                 _passwordServiceMock.Object);
+                 _passwordServiceMock.Object, _configuration);
 
             bool updateClientBool = false;
             updateClientBool = await clientService.UpdateClientAsync(updateClient);
@@ -136,7 +146,7 @@ namespace API_UnitTests
             var clientService = new ClientService(
                  _genericClientRepositoryMock.Object,
                  _tokenServiceMock.Object,
-                 _passwordServiceMock.Object);
+                 _passwordServiceMock.Object, _configuration);
 
             var actulClients = await clientService.GetAllClientsAsync();
 
@@ -149,14 +159,15 @@ namespace API_UnitTests
         {
             var clientLogin = _fixture.Create<Client>();
             var token = _fixture.Create<string>();
-            var salt = _fixture.Create<string>();
-            var hashedPassword = _fixture.Create<string>();
+            var password = "Pass123";
+            var hashedPassword = "hashed";
+            clientLogin.Password = hashedPassword;
             var clientGuid = Guid.NewGuid();
 
             var loginDto = new LoginDto()
             {
                 Email = clientLogin.Email,
-                Password = clientLogin.Password
+                Password = password
             };
 
             _genericClientRepositoryMock
@@ -166,7 +177,7 @@ namespace API_UnitTests
                 .ReturnsAsync(new List<Client> { clientLogin })
                 .Verifiable();
             _passwordServiceMock.Setup(ps => ps.ValidatePassword(
-                loginDto.Password, clientLogin.Password, clientLogin.Salt))
+                loginDto.Password, clientLogin.Password, _salt))
                 .Returns(true)
                 .Verifiable();
             _tokenServiceMock
@@ -175,13 +186,14 @@ namespace API_UnitTests
             var clientService = new ClientService(
                  _genericClientRepositoryMock.Object,
                  _tokenServiceMock.Object,
-                 _passwordServiceMock.Object);
+                 _passwordServiceMock.Object, _configuration);
 
             var actualClientToken = await clientService.LoginAsync(loginDto);
 
             actualClientToken.Should().Be(token);
             _passwordServiceMock.Verify();
             _genericClientRepositoryMock.Verify();
+            _tokenServiceMock.Verify();
         }
 
         [Test]
@@ -197,13 +209,12 @@ namespace API_UnitTests
             var clientService = new ClientService(
                  _genericClientRepositoryMock.Object,
                  _tokenServiceMock.Object,
-                 _passwordServiceMock.Object);
+                 _passwordServiceMock.Object, _configuration);
 
             var actualClient = await clientService.GetClientByIdAsync(getClient.Id);
 
             actualClient.Should().Be(getClient);
             _genericClientRepositoryMock.Verify();
         }
-
     }
 }

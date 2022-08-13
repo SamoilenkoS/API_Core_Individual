@@ -1,4 +1,5 @@
-﻿using API_Core_DAL;
+﻿using API_Core_BL.DTOs;
+using API_Core_DAL;
 using API_Core_DAL.Entities;
 using System;
 using System.Collections.Generic;
@@ -9,15 +10,26 @@ namespace API_Core_BL.Services.LibraryService
     public class LibraryService : ILibraryService
     {
         private readonly IGenericRepository<Library> _libraryRepository;
+        private readonly IGenericRepository<City> _cityRepository;
 
-        public LibraryService(IGenericRepository<Library> libraryRepository)
+        public LibraryService(IGenericRepository<Library> libraryRepository, IGenericRepository<City> cityRepository)
         {
             _libraryRepository = libraryRepository;
+            _cityRepository = cityRepository;
         }
 
-        public async Task<Guid> AddLibraryAsync(Library library)
+        public async Task<Guid> AddLibraryAsync(LibraryDto libraryDto)
         {
-            return await _libraryRepository.AddAsync(library);
+            var addLibrary = new Library
+            {
+                DelayPrice = libraryDto.DelayPrice,
+                FullAddress = libraryDto.FullAddress,
+                Latitude = libraryDto.Latitude,
+                Longitude = libraryDto.Longitude,
+                CityId = libraryDto.CityId
+            };
+
+            return await _libraryRepository.AddAsync(addLibrary);
         }
 
         public async Task<bool> DeleteLibraryAsync(Guid id)

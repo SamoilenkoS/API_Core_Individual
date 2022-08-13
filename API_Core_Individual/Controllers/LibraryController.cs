@@ -1,4 +1,5 @@
-﻿using API_Core_BL.Services.LibraryService;
+﻿using API_Core_BL.DTOs;
+using API_Core_BL.Services.LibraryService;
 using API_Core_DAL.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -46,18 +47,16 @@ namespace API_Core_Individual.Controllers
             return await _libraryService.UpdateLibraryAsync(library);
         }
 
-        [Authorize]
         [HttpDelete("{id}")]
         public async Task<bool> DeleteLibrary(Guid id)
         {
             return await _libraryService.DeleteLibraryAsync(id);
         }
 
-        [Authorize]
         [HttpPost]
-        public async Task<Guid> CreateLibrary(Library library)
+        public async Task<Guid> CreateLibrary(LibraryDto libraryDto)
         {
-            return await _libraryService.AddLibraryAsync(library);
+            return await _libraryService.AddLibraryAsync(libraryDto);
         }
     }
 }
